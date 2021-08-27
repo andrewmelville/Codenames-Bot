@@ -4,10 +4,8 @@ channels:
 dependencies:
   - pandas=1.3.2
   - tensorflow
-  - transformers
   - jupyterlab
-  - iprogress
-  - ipywidgets
   - spacy
   - scikit-learn
   - matplotlib
+  - seaborn
