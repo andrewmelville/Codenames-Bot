@@ -43,7 +43,7 @@ def objective(trial):
         targets, proposal = spymaster.make_proposal()
         guess = operative.Guess(proposal, len(targets))
         score = 0
-        for word in guess:
+        for word in reversed(guess):
             if word in targets:
                 score += 1
             elif word in spymaster.board_dict[spymaster.other_team]:
