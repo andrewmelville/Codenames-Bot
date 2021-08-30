@@ -38,7 +38,7 @@ class Operative:
         # Calculate distances and add to dictionary
         for word, emb in zip(self.board_words, self.board_embeddings):
 
-            word_dict[word] = emb @ clue_word.vector / np.linalg.norm(clue_word.vector)
+            word_dict[word] = emb @ (clue_word.vector / np.linalg.norm(clue_word.vector, ord = 2))
             
         # Order dictionary
         words = [k for k, v in sorted(word_dict.items(), key=lambda item: item[1])]
