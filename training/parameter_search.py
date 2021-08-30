@@ -11,7 +11,7 @@ from utils.operative import Operative
 def simulate_board(possible_words):
     
     sampled_words = np.random.choice(possible_words, size = 25)
-    board = {'blue': sampled_words[:8][:np.random.choice(8, size = 1)]
+    board = {'blue': sampled_words[:8][:np.random.choice(8, size = 1)],
              'orange': sampled_words[8:16][:np.random.choice(8, size = 1)],
              'white': sampled_words[16:24][:np.random.choice(8, size = 1)],
              'black': sampled_words[24]}
