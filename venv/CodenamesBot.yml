@@ -1,6 +1,7 @@
 name: CodenamesBot
 channels:
   - defaults
+  - conda-forge
 dependencies:
   - pandas=1.3.2
   - tensorflow
