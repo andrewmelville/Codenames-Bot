@@ -6,7 +6,8 @@ import sys
 import numpy as np
 sys.path.insert(0, '..')
 
-subprocess.call(['python', '-m', 'spacy', 'download', 'en_core_web_lg'])
+if 'en_core_web_lg' not in sys.modules:
+    subprocess.call(['python', '-m', 'spacy', 'download', 'en_core_web_lg'])
 nltk.download('words')
 
 from utils.spymaster import SpyMaster
@@ -16,7 +17,7 @@ def simulate_board(possible_words):
     
     sampled_words = np.random.choice(possible_words, size = 25)
     sampling_probs = np.arange(1, 9) / np.arange(1, 9).sum()
-    board = {'blue': list(sampled_words[:8][:np.random.choice(np.arange(1, 9), sampling_probs)[0]]),
+    board = {'blue': list(sampled_words[:8][:np.random.choice(np.arange(1, 9), size = 1, p = sampling_probs)[0]]),
              'orange': list(sampled_words[8:16][:np.random.choice(np.arange(1, 9), size = 1, p = sampling_probs)[0]]),
              'white': list(sampled_words[16:24][:np.random.choice(9, size = 1, p = np.arange(1, 10) / np.arange(1, 10).sum())[0]]),
              'black': [sampled_words[24]]}
