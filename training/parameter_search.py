@@ -16,9 +16,9 @@ def simulate_board(possible_words):
     
     sampled_words = np.random.choice(possible_words, size = 25)
     sampling_probs = np.arange(1, 9) / np.arange(1, 9).sum()
-    board = {'blue': list(sampled_words[:8][:np.random.choice(np.arange(1, 8), size = 1, p = np.arange(1, 8) / np.arange(1, 8).sum())[0]]),
-             'orange': list(sampled_words[8:16][:np.random.choice(np.arange(1, 8), size = 1, p = np.arange(1, 8) / np.arange(1, 8).sum())[0]]),
-             'white': list(sampled_words[16:24][:np.random.choice(8, size = 1, p = sampling_probs)[0]]),
+    board = {'blue': list(sampled_words[:8][:np.random.choice(np.arange(1, 9), sampling_probs)[0]]),
+             'orange': list(sampled_words[8:16][:np.random.choice(np.arange(1, 9), size = 1, p = sampling_probs)[0]]),
+             'white': list(sampled_words[16:24][:np.random.choice(9, size = 1, p = np.arange(1, 10) / np.arange(1, 10).sum())[0]]),
              'black': [sampled_words[24]]}
     
     return board
