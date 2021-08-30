@@ -6,7 +6,7 @@ import sys
 import numpy as np
 sys.path.insert(0, '..')
 
-subprocess.Popen(['python', '-m', 'spacy', 'download', 'en_core_web_lg'])
+subprocess.call(['python', '-m', 'spacy', 'download', 'en_core_web_lg'])
 nltk.download('words')
 
 from utils.spymaster import SpyMaster
@@ -15,10 +15,11 @@ from utils.operative import Operative
 def simulate_board(possible_words):
     
     sampled_words = np.random.choice(possible_words, size = 25)
-    board = {'blue': sampled_words[:8][:np.random.choice(8, size = 1)],
-             'orange': sampled_words[8:16][:np.random.choice(8, size = 1)],
-             'white': sampled_words[16:24][:np.random.choice(8, size = 1)],
-             'black': sampled_words[24]}
+    sampling_probs = np.arange(1, 9) / np.arange(1, 9).sum()
+    board = {'blue': list(sampled_words[:8][:np.random.choice(np.arange(1, 8), size = 1, p = np.arange(1, 8) / np.arange(1, 8).sum())[0]]),
+             'orange': list(sampled_words[8:16][:np.random.choice(np.arange(1, 8), size = 1, p = np.arange(1, 8) / np.arange(1, 8).sum())[0]]),
+             'white': list(sampled_words[16:24][:np.random.choice(8, size = 1, p = sampling_probs)[0]]),
+             'black': [sampled_words[24]]}
     
     return board
     
@@ -27,11 +28,11 @@ with open('../data/wordlist-eng.txt', 'r') as file:
 
 def objective(trial):
     
-    alpha1 = trial.suggest_float(low = 0.0001, high = 1, log = True)
-    alpha2 = trial.suggest_float(low = 0.0001, high = 1, log = True)
-    alpha3 = trial.suggest_float(low = 0.0001, high = 1, log = True)
-    alpha4 = trial.suggest_float(low = 0.0001, high = 1, log = True)
-    alpha5 = trial.suggest_float(low = 0.0001, high = 1, log = True)
+    alpha1 = trial.suggest_float(low = 0.0001, high = 1, log = True, name = 'alpha1')
+    alpha2 = trial.suggest_float(low = 0.0001, high = 1, log = True, name = 'alpha2')
+    alpha3 = trial.suggest_float(low = 0.0001, high = 1, log = True, name = 'alpha3')
+    alpha4 = trial.suggest_float(low = 0.0001, high = 1, log = True, name = 'alpha4')
+    alpha5 = trial.suggest_float(low = 0.0001, high = 1, log = True, name = 'alpha5')
 
     scores = []
     for i in range(500):
@@ -61,7 +62,7 @@ def objective(trial):
     
     return mean_score
 
-study = optuna.create_study(directions = 'maximize',
+study = optuna.create_study(direction = 'maximize',
                             pruner = optuna.pruners.MedianPruner(), 
                             sampler = optuna.samplers.TPESampler(seed = 123))
 study.optimize(objective, n_trials = 50)
