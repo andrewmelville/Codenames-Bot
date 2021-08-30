@@ -37,7 +37,7 @@ def objective(trial):
     np.random.seed(123)
 
     scores = []
-    for i in range(500):
+    for i in range(1000):
         game_board = simulate_board(words)
         spymaster = SpyMaster(game_board, my_team = 'blue', 
                               alpha1 = alpha1, alpha2 = alpha2,
