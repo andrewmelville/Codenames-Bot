@@ -5,6 +5,10 @@ import optuna
 import sys
 import numpy as np
 sys.path.insert(0, '..')
+
+subprocess.Popen(['python', '-m', 'spacy', 'download', 'en_core_web_lg'])
+nltk.download('words')
+
 from utils.spymaster import SpyMaster
 from utils.operative import Operative
 
@@ -20,9 +24,6 @@ def simulate_board(possible_words):
     
 with open('../data/wordlist-eng.txt', 'r') as file:
     words = [word.strip('\n') for word in file.readlines()]
-
-subprocess.Popen(['python', '-m', 'spacy', 'download', 'en_core_web_lg'])
-nltk.download('words')
 
 def objective(trial):
     
