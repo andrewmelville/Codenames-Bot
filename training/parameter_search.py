@@ -18,7 +18,7 @@ def simulate_board(possible_words):
     
     return board
     
-with open('data/wordlist-eng.txt', 'r') as file:
+with open('../data/wordlist-eng.txt', 'r') as file:
     words = [word.strip('\n') for word in file.readlines()]
 
 subprocess.Popen(['python', '-m', 'spacy', 'download', 'en_core_web_lg'])
