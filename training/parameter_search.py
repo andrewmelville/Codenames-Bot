@@ -33,6 +33,8 @@ def objective(trial):
     alpha3 = trial.suggest_float(low = 0.0001, high = 1, log = True, name = 'alpha3')
     alpha4 = trial.suggest_float(low = 0.0001, high = 1, log = True, name = 'alpha4')
     alpha5 = trial.suggest_float(low = 0.0001, high = 1, log = True, name = 'alpha5')
+    
+    np.random.seed(123)
 
     scores = []
     for i in range(500):
