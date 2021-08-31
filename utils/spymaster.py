@@ -48,6 +48,7 @@ class SpyMaster:
         self.team_word_indices = [i for i, word in enumerate(self.board_words) if word in self.board_dict[self.my_team]]
         self.other_team_word_indices = [i for i, word in enumerate(self.board_words) if word in self.board_dict[self.other_team]]
         self.black_word_index = [i for i, word in enumerate(self.board_words) if word in self.board_dict['black']]
+        self.non_team_word_indices = [i for i, word in enumerate(self.board_words) if word in self.board_dict['white']]
             
         # get list of all possible proposal words
         self.proposal_words = list(self.vocab.difference(self.individual_board_words))
@@ -80,8 +81,8 @@ class SpyMaster:
         self.alpha4 = alpha4
         self.alpha5 = alpha5
         
-        self.my_team_score = 0
-        self.other_team_score = 0
+        self.my_team_score = 8 - len(self.team_word_indices)
+        self.other_team_score = 8 - len(self.other_team_word_indices)
         
     def make_proposal(self) -> tuple:
         
@@ -106,7 +107,7 @@ class SpyMaster:
     def score(self, targets):
         
         target_similarities = self.proposal_board_similarities[:, targets]
-        other_team_word_similarities = self.proposal_board_similarities[:, self.other_team_word_indices]
+        other_team_word_similarities = self.proposal_board_similarities[:, self.non_team_word_indices]
         mean_target_similarities = target_similarities.mean(axis = 1)
         mean_other_team_word_similarities = other_team_word_similarities.mean(axis = 1)
         var_other_team_word_similarities = (other_team_word_similarities**2).mean(axis = 1)
