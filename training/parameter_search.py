@@ -4,9 +4,13 @@ import subprocess
 import optuna
 import sys
 import numpy as np
+import pkg_resources
+import pickle
 sys.path.insert(0, '..')
 
-if 'en_core_web_lg' not in sys.modules:
+try:
+    pkg_resources.get_distribution('en_core_web_lg')
+except pkg_resources.DistributionNotFound:
     subprocess.call(['python', '-m', 'spacy', 'download', 'en_core_web_lg'])
 nltk.download('words')
 
@@ -70,6 +74,7 @@ study = optuna.create_study(direction = 'maximize',
                             sampler = optuna.samplers.TPESampler(seed = 123))
 study.optimize(objective, n_trials = 50)
 
+pickle.dump(study, open('../data/study.pkl', 'wb'))
 trials = study.trials_dataframe()
     
 trials.to_csv('../data/hyperparameter_search_results.csv', index = False)
