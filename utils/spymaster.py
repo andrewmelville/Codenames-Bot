@@ -108,15 +108,15 @@ class SpyMaster:
     def score(self, targets):
         
         target_similarities = self.proposal_board_similarities[:, targets]
-        other_team_word_similarities = self.proposal_board_similarities[:, self.non_team_word_indices]
+        non_team_word_similarities = self.proposal_board_similarities[:, self.non_team_word_indices]
         mean_target_similarities = target_similarities.mean(axis = 1)
-        mean_other_team_word_similarities = other_team_word_similarities.mean(axis = 1)
-        var_other_team_word_similarities = (other_team_word_similarities**2).mean(axis = 1)
+        mean_non_team_word_similarities = non_team_word_similarities.mean(axis = 1)
+        var_non_team_word_similarities = (non_team_word_similarities**2).mean(axis = 1)
         black_word_similarities = self.proposal_board_similarities[:, self.black_word_index[0]]
         team_score_ratio = (self.other_team_score + 1) / (self.my_team_score + 1)
         scores = (self.alpha1 * mean_target_similarities + 
                   self.alpha2 * team_score_ratio * np.log2(len(targets)) -
-                  self.alpha3 * mean_other_team_word_similarities -
-                  self.alpha4 * var_other_team_word_similarities -
+                  self.alpha3 * mean_non_team_word_similarities -
+                  self.alpha4 * var_non_team_word_similarities -
                   self.alpha5 * black_word_similarities)
         return scores
