@@ -36,7 +36,7 @@ class SpyMaster:
             raise ValueError('Argument "my_team" should be a key in the dictionary argument "board_dict", and one of (blue, orange)')
             
         self.my_team = my_team
-        self.other_team = 'blue' if my_team == 'blue' else 'orange' 
+        self.other_team = 'orange' if my_team == 'blue' else 'blue' 
         
         # convert all letters to uppercase when setting instance board words variable
         self.board_dict = {team: [word.upper() for word in words] for team, words in board_dict.items()}
@@ -46,7 +46,7 @@ class SpyMaster:
         self.individual_board_words = list(chain(*[word.split(' ') for word in self.board_words]))
            
         self.team_word_indices = [i for i, word in enumerate(self.board_words) if word in self.board_dict[self.my_team]]
-        self.other_team_word_indices = [i for i, word in enumerate(self.board_words) if word not in self.board_dict[self.other_team]]
+        self.other_team_word_indices = [i for i, word in enumerate(self.board_words) if word in self.board_dict[self.other_team]]
         self.black_word_index = [i for i, word in enumerate(self.board_words) if word in self.board_dict['black']]
             
         # get list of all possible proposal words
