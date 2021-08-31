@@ -49,7 +49,7 @@ class SpyMaster:
         self.other_team_word_indices = [i for i, word in enumerate(self.board_words) if word in self.board_dict[self.other_team]]
         self.black_word_index = [i for i, word in enumerate(self.board_words) if word in self.board_dict['black']]
         self.white_word_indices = [i for i, word in enumerate(self.board_words) if word in self.board_dict['white']]
-        self.non_team_word_indices = other_team_word_indices + white_word_indices
+        self.non_team_word_indices = self.other_team_word_indices + self.white_word_indices
             
         # get list of all possible proposal words
         self.proposal_words = list(self.vocab.difference(self.individual_board_words))
