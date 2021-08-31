@@ -19,7 +19,7 @@ from utils.operative import Operative
 
 def simulate_board(possible_words):
     
-    sampled_words = np.random.choice(possible_words, size = 25)
+    sampled_words = np.random.choice(possible_words, size = 25, replace = False)
     sampling_probs = np.arange(1, 9) / np.arange(1, 9).sum()
     board = {'blue': list(sampled_words[:8][:np.random.choice(np.arange(1, 9), size = 1, p = sampling_probs)[0]]),
              'orange': list(sampled_words[8:16][:np.random.choice(np.arange(1, 9), size = 1, p = sampling_probs)[0]]),
