@@ -74,7 +74,8 @@ study = optuna.create_study(direction = 'maximize',
                             sampler = optuna.samplers.TPESampler(seed = 123))
 study.optimize(objective, n_trials = 50)
 
-pickle.dump(study, open('../data/study.pkl', 'wb'))
 trials = study.trials_dataframe()
     
 trials.to_csv('../data/hyperparameter_search_results.csv', index = False)
+
+pickle.dump(study, open('../data/study.pkl', 'wb'))
