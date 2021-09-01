@@ -2,8 +2,9 @@ import spacy
 import nltk
 from itertools import combinations, chain
 import numpy as np
+from game import Game
 
-class SpyMaster:
+class SpyMaster(Game):
     
     nlp = spacy.load('en_core_web_lg')
     english_words = set([word.upper() for word in nltk.corpus.words.words()])
@@ -20,9 +21,18 @@ class SpyMaster:
                   possible_words: set) -> None:
         
         cls.vocab = list(set([word.upper() for word in cls.nlp.vocab.strings if word in possible_words]))
+        
+    @property
+    def word_indices(self)
+        indices = {}
+        for team in [self.my_team, self.other_team, 'white', 'black']:
+            indices[team] = [i for i, words in enumerate(self.board_words) if 
+                             word in self.board_dict[team] and not self.revealed[word]]
+        return indices
     
     def __init__(self, 
                  board_dict: dict, 
+                 board_words: list, 
                  my_team: str, 
                  alpha1: float = 1,
                  alpha2: float = 1,
@@ -32,30 +42,20 @@ class SpyMaster:
         
 #     Arguments
 #     ------------
-#     board_dict : dictionary of the form {'blue': ..., 'orange': ..., 'black': ..., 'orange': ...} with lists of words under each team
+#     board_dict : dictionary of the form {'blue': ..., 'orange': ..., 'black': ..., 'white': ...} with lists of words under each team
 #     my_team : string, which team the bot is on (should be a key in board_dict)
 #     beta : scoring model parameter beta
 #     alpha : scoring model parameter alpha
         
-        if my_team not in board_dict or (my_team != 'blue' and my_team != 'orange'):
-            raise ValueError('Argument "my_team" should be a key in the dictionary argument "board_dict", and one of (blue, orange)')
-            
-        self.my_team = my_team
-        self.other_team = 'orange' if my_team == 'blue' else 'blue' 
-        
+    
         # convert all letters to uppercase when setting instance board words variable
         self.board_dict = {team: [word.upper() for word in words] for team, words in board_dict.items()}
         
         # concatenate all board words into a single list
-        self.board_words = list(chain(*self.board_dict.values()))
+        super().__init__(my_team, board_words)
+        
         self.individual_board_words = list(chain(*[word.split(' ') for word in self.board_words]))
            
-        self.team_word_indices = [i for i, word in enumerate(self.board_words) if word in self.board_dict[self.my_team]]
-        self.other_team_word_indices = [i for i, word in enumerate(self.board_words) if word in self.board_dict[self.other_team]]
-        self.black_word_index = [i for i, word in enumerate(self.board_words) if word in self.board_dict['black']]
-        self.white_word_indices = [i for i, word in enumerate(self.board_words) if word in self.board_dict['white']]
-        self.non_team_word_indices = self.other_team_word_indices + self.white_word_indices
-            
         # get list of all possible proposal words
         self.proposal_word_indices = [(i, word) for i, word in enumerate(self.vocab) if word not in self.board_words]
             
@@ -89,9 +89,9 @@ class SpyMaster:
         
         best_combination_score = -100
         # loop through possible numbers of words to propose
-        for num_words in range(1, len(self.team_word_indices) + 1):
+        for num_words in range(1, len(self.word_indices[self.my_team]) + 1):
             # loop through unique combinations of those words
-            for comb in combinations(self.team_word_indices, num_words):
+            for comb in combinations(self.word_indices[self.my_team], num_words):
                 # get scores for each proposal
                 proposal_scores = self.score(comb)
                 highest_score_idx = np.argmax(proposal_scores)
@@ -108,7 +108,7 @@ class SpyMaster:
     def score(self, targets: list) -> np.ndarray:
         
         target_similarities = self.proposal_board_similarities[:, targets]
-        non_team_word_similarities = self.proposal_board_similarities[:, self.non_team_word_indices]
+        non_team_word_similarities = self.proposal_board_similarities[:, self.word_indices['white'] + self.word_indices[self.other_team]]
         mean_target_similarities = target_similarities.mean(axis = 1)
         mean_non_team_word_similarities = non_team_word_similarities.mean(axis = 1)
         var_non_team_word_similarities = (non_team_word_similarities**2).mean(axis = 1)
