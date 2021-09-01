@@ -87,7 +87,7 @@ class SpyMaster:
         
     def make_proposal(self) -> tuple:
         
-        best_combination_score = 0
+        best_combination_score = -100
         # loop through possible numbers of words to propose
         for num_words in range(1, len(self.team_word_indices) + 1):
             # loop through unique combinations of those words
