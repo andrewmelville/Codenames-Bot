@@ -1,3 +1,5 @@
+import time
+
 class Player:
     
     def __init__(self):
@@ -5,14 +7,29 @@ class Player:
         # Take team colour as input
         self.my_team_colour = ''
         
+        # Greet player
+        print("Hi I'm Codenames-Bot, but you can call me Codey! Let's play codenames!")
+        time.sleep(2)
+        
+        # Only accept valid team colours
         while self.my_team_colour not in ['Orange', 'Blue']:
             
-            cand_colour = input("Which team am I on?") 
+            # Ask for input of team colour
+            cand_colour = input("Which team am I on?").lower()
             
+            # Capitalise first letter of team name
+            cand_colour = cand_colour[0].upper() + cand_colour[1:]
+            print(cand_colour)
+            
+            # Check input and advice on issues
             if cand_colour in ['Orange', 'Blue']:
                 self.my_team_colour = cand_colour
             else:
-                cand_colour = input("That's not a valid team colour. Please enter Blue or Orange.")
+                cand_colour = input("That's not a valid team colour. Please enter 'Blue' or 'Orange'.")
+        
+        # Confirm team assignment
+        print("Great, go {} team!".format(self.my_team_colour))
+        
         
         # Initialise scores and board words
         self.blue_score = 0
@@ -23,7 +40,7 @@ class Player:
         # Take board words as input
         while len(self.board_words) < 25:
             
-            cand_board_word = input("Which cards are on the board? {}/25".format(len(self.board_words)+1))
+            cand_board_word = input("Which are on the board? {}/25".format(len(self.board_words)+1)).upper()
             self.board_words = self.board_words.union(set([cand_board_word]))
         
         
