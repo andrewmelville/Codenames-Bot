@@ -2,7 +2,7 @@ import spacy
 import nltk
 from itertools import combinations, chain
 import numpy as np
-from game import Game
+from utils.game import Game
 
 class SpyMaster(Game):
     
