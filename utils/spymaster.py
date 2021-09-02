@@ -50,7 +50,8 @@ class SpyMaster(Game):
                  alpha3: float = 0.5, 
                  alpha4: float = 0.5,
                  alpha5: float = 0.5,
-                 alpha6: float = 0.5) -> None: 
+                 alpha6: float = 0.5,
+                 beta1: float = 2.75) -> None: 
         
 #     Arguments
 #     ------------
@@ -94,6 +95,7 @@ class SpyMaster(Game):
         self.alpha4 = alpha4
         self.alpha5 = alpha5
         self.alpha6 = alpha6
+        self.beta1 = beta1
         
         self.my_team_score = 8 - len(self.word_indices[self.my_team])
         self.other_team_score = 8 - len(self.word_indices[self.other_team])
@@ -131,7 +133,7 @@ class SpyMaster(Game):
 
         scores = (self.alpha1 * mean_target_similarities
                   - self.alpha2 * var_target_similarities
-                  + self.alpha3 * np.exp(-len(targets)) * len(targets)**2.75 
+                  + self.alpha3 * np.exp(-len(targets)) * len(targets)**self.beta1
                   - self.alpha4 * mean_non_team_word_similarities
                   - self.alpha5 * var_non_team_word_similarities
                   - self.alpha6 * black_word_similarities)
