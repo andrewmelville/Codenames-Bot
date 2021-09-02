@@ -21,7 +21,13 @@ class SpyMaster(Game):
                   possible_words: set) -> None:
         
         cls.vocab = list(set([word.upper() for word in cls.nlp.vocab.strings if word in possible_words]))
-        
+        cls.vocab_nlp = list(nlp.pipe(cls.vocab))
+        cls.vocab_embeddings = np.array([word.vector for word in cls.vocab_nlp])
+        cls.vocab_embedding_norms = np.linalg.norm(cls.vocab_embeddings, axis = 1, ord = 2)
+        cls.vocab_embeddings = cls.vocab_embeddings[cls.vocab_embedding_norms != 0]
+        cls.vocab_embeddings = cls.vocab_embeddings / cls.vocab_embedding_norms[cls.vocab_embedding_norms != 0, None]
+        cls.vocab = np.array(cls.vocab)[cls.vocab_embedding_norms != 0].tolist()
+    
     @property
     def word_indices(self):
         indices = {}
