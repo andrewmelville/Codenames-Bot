@@ -88,8 +88,8 @@ class SpyMaster(Game):
         self.alpha4 = alpha4
         self.alpha5 = alpha5
         
-        self.my_team_score = 8 - len(self.team_word_indices)
-        self.other_team_score = 8 - len(self.other_team_word_indices)
+        self.my_team_score = 8 - len(self.word_indices[self.my_team])
+        self.other_team_score = 8 - len(self.word_indices[self.other_team])
         
     def make_proposal(self) -> tuple:
         
