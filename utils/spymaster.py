@@ -23,7 +23,7 @@ class SpyMaster(Game):
         cls.vocab = list(set([word.upper() for word in cls.nlp.vocab.strings if word in possible_words]))
         
     @property
-    def word_indices(self)
+    def word_indices(self):
         indices = {}
         for team in [self.my_team, self.other_team, 'white', 'black']:
             indices[team] = [i for i, words in enumerate(self.board_words) if 
