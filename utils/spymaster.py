@@ -121,8 +121,7 @@ class SpyMaster(Game):
         black_word_similarities = self.proposal_board_similarities[:, self.word_indices['black'][0]]
         team_score_ratio = (self.other_team_score + 1) / (self.my_team_score + 1)
         scores = (self.alpha1 * mean_target_similarities + 
-                  self.alpha2 * team_score_ratio * np.log2(len(targets)) -
+                  self.alpha2 * np.exp(-len(targets)) * len(targets)**2.7 - 
                   self.alpha3 * mean_non_team_word_similarities -
                   self.alpha4 * var_non_team_word_similarities -
                   self.alpha5 * black_word_similarities)
-        return scores
