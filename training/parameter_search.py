@@ -8,46 +8,42 @@ import pkg_resources
 import pickle
 sys.path.insert(0, '..')
 
+from utils.game import Game
+
 try:
     pkg_resources.get_distribution('en_core_web_lg')
 except pkg_resources.DistributionNotFound:
-    subprocess.call(['python', '-m', 'spacy', 'download', 'en_core_web_lg'])
-nltk.download('words')
+    subprocess.call(['python', '-m', 'spacy', 'download', 'en_core_web_lg']
 
 from utils.spymaster import SpyMaster
 from utils.operative import Operative
-
-def simulate_board(possible_words):
-    
-    sampled_words = np.random.choice(possible_words, size = 25, replace = False)
-    sampling_probs = np.arange(1, 9) / np.arange(1, 9).sum()
-    board = {'blue': list(sampled_words[:8][:np.random.choice(np.arange(1, 9), size = 1, p = sampling_probs)[0]]),
-             'orange': list(sampled_words[8:16][:np.random.choice(np.arange(1, 9), size = 1, p = sampling_probs)[0]]),
-             'white': list(sampled_words[16:24][:np.random.choice(9, size = 1, p = np.arange(1, 10) / np.arange(1, 10).sum())[0]]),
-             'black': [sampled_words[24]]}
-    
-    return board
     
 with open('../data/wordlist-eng.txt', 'r') as file:
     words = [word.strip('\n') for word in file.readlines()]
 
 def objective(trial):
     
-    alpha1 = trial.suggest_float(low = 0.0001, high = 1, log = True, name = 'alpha1')
     alpha2 = trial.suggest_float(low = 0.0001, high = 1, log = True, name = 'alpha2')
     alpha3 = trial.suggest_float(low = 0.0001, high = 1, log = True, name = 'alpha3')
     alpha4 = trial.suggest_float(low = 0.0001, high = 1, log = True, name = 'alpha4')
     alpha5 = trial.suggest_float(low = 0.0001, high = 1, log = True, name = 'alpha5')
+    alpha6 = trial.suggest_float(low = 0.0001, high = 1, log = True, name = 'alpha6')
+    beta1 = trial.suggest_float(low = 0.0001, high = 1, log = True, name = 'alpha6')
     
     np.random.seed(123)
 
     scores = []
-    for i in range(500):
-        game_board = simulate_board(words)
-        spymaster = SpyMaster(game_board, my_team = 'blue', 
-                              alpha1 = alpha1, alpha2 = alpha2,
-                              alpha3 = alpha3, alpha4 = alpha4, 
-                              alpha5 = alpha5)
+    for i in range(1000):
+        board_dict, board_words = Game.simulate_board(words)
+        spymaster = SpyMaster(board_dict, 
+                              board_words,
+                              my_team = 'blue', 
+                              alpha2 = alpha2, 
+                              alpha3 = alpha3, 
+                              alpha4 = alpha4, 
+                              alpha5 = alpha5, 
+                              alpha6 = alpha6,
+                              beta1 = beta1)
         operative = Operative(spymaster.board_words)
         targets, proposal = spymaster.make_proposal()
         guess = operative.Guess(proposal, len(targets))
@@ -59,7 +55,7 @@ def objective(trial):
                 score -= 1
                 break
             elif word in spymaster.board_dict['black']:
-                score = -len(spymaster.other_team_word_indices)
+                score = -8
                 break
             elif word in spymaster.board_dict['white']:
                 break
