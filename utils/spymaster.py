@@ -12,12 +12,14 @@ class SpyMaster(Game):
         english_words = set([word.strip('\n').upper() for word in file.readlines()])
 
     vocab = list(set([word.upper() for word in nlp.vocab.strings]).intersection(english_words))
+    vocab = list(set([tok.lemma_.upper() for doc in nlp.pipe(vocab) for tok in doc]))
     vocab_nlp = list(nlp.pipe(vocab))
     vocab_embeddings = np.array([word.vector for word in vocab_nlp])
     vocab_embedding_norms = np.linalg.norm(vocab_embeddings, axis = 1, ord = 2)
     vocab_embeddings = vocab_embeddings[vocab_embedding_norms != 0]
     vocab_embeddings = vocab_embeddings / vocab_embedding_norms[vocab_embedding_norms != 0, None]
     vocab = np.array(vocab)[vocab_embedding_norms != 0].tolist()
+    
     
     @classmethod
     def set_vocab(cls, 
@@ -47,7 +49,8 @@ class SpyMaster(Game):
                  alpha2: float = 1,
                  alpha3: float = 0.5, 
                  alpha4: float = 0.5,
-                 alpha5: float = 0.5) -> None: 
+                 alpha5: float = 0.5,
+                 alpha6: float = 0.5) -> None: 
         
 #     Arguments
 #     ------------
@@ -90,6 +93,7 @@ class SpyMaster(Game):
         self.alpha3 = alpha3
         self.alpha4 = alpha4
         self.alpha5 = alpha5
+        self.alpha6 = alpha6
         
         self.my_team_score = 8 - len(self.word_indices[self.my_team])
         self.other_team_score = 8 - len(self.word_indices[self.other_team])
@@ -119,12 +123,17 @@ class SpyMaster(Game):
         target_similarities = self.proposal_board_similarities[:, targets]
         non_team_word_similarities = self.proposal_board_similarities[:, self.word_indices['white'] + self.word_indices[self.other_team]]
         mean_target_similarities = target_similarities.mean(axis = 1)
+        var_target_similarities = (target_similarities).var(axis = 1)
         mean_non_team_word_similarities = non_team_word_similarities.mean(axis = 1)
-        var_non_team_word_similarities = (non_team_word_similarities**2).mean(axis = 1)
+        var_non_team_word_similarities = (non_team_word_similarities).var(axis = 1)
         black_word_similarities = self.proposal_board_similarities[:, self.word_indices['black'][0]]
         team_score_ratio = (self.other_team_score + 1) / (self.my_team_score + 1)
-        scores = (self.alpha1 * mean_target_similarities + 
-                  self.alpha2 * np.exp(-len(targets)) * len(targets)**2.7 - 
-                  self.alpha3 * mean_non_team_word_similarities -
-                  self.alpha4 * var_non_team_word_similarities -
-                  self.alpha5 * black_word_similarities)
+
+        scores = (self.alpha1 * mean_target_similarities
+                  - self.alpha2 * var_target_similarities
+                  + self.alpha3 * np.exp(-len(targets)) * len(targets)**2.75 
+                  - self.alpha4 * mean_non_team_word_similarities
+                  - self.alpha5 * var_non_team_word_similarities
+                  - self.alpha6 * black_word_similarities)
+        
+        return scores
