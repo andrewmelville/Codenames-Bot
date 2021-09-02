@@ -13,7 +13,7 @@ from utils.game import Game
 try:
     pkg_resources.get_distribution('en_core_web_lg')
 except pkg_resources.DistributionNotFound:
-    subprocess.call(['python', '-m', 'spacy', 'download', 'en_core_web_lg']
+    subprocess.call(['python', '-m', 'spacy', 'download', 'en_core_web_lg'])
 
 from utils.spymaster import SpyMaster
 from utils.operative import Operative
@@ -28,7 +28,7 @@ def objective(trial):
     alpha4 = trial.suggest_float(low = 0.0001, high = 1, log = True, name = 'alpha4')
     alpha5 = trial.suggest_float(low = 0.0001, high = 1, log = True, name = 'alpha5')
     alpha6 = trial.suggest_float(low = 0.0001, high = 1, log = True, name = 'alpha6')
-    beta1 = trial.suggest_float(low = 0.0001, high = 1, log = True, name = 'alpha6')
+    beta1 = trial.suggest_float(low = 0.0001, high = 1, log = True, name = 'beta1')
     
     np.random.seed(123)
 
