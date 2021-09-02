@@ -32,7 +32,7 @@ class SpyMaster(Game):
     def word_indices(self):
         indices = {}
         for team in [self.my_team, self.other_team, 'white', 'black']:
-            indices[team] = [i for i, words in enumerate(self.board_words) if 
+            indices[team] = [i for i, word in enumerate(self.board_words) if 
                              word in self.board_dict[team] and not self.revealed[word]]
         return indices
     
