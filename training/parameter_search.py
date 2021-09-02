@@ -23,12 +23,12 @@ with open('../data/wordlist-eng.txt', 'r') as file:
 
 def objective(trial):
     
-    alpha2 = trial.suggest_float(low = 0.0001, high = 1, log = True, name = 'alpha2')
-    alpha3 = trial.suggest_float(low = 0.0001, high = 1, log = True, name = 'alpha3')
-    alpha4 = trial.suggest_float(low = 0.0001, high = 1, log = True, name = 'alpha4')
-    alpha5 = trial.suggest_float(low = 0.0001, high = 1, log = True, name = 'alpha5')
-    alpha6 = trial.suggest_float(low = 0.0001, high = 1, log = True, name = 'alpha6')
-    beta1 = trial.suggest_float(low = 0.0001, high = 1, log = True, name = 'beta1')
+    alpha1 = trial.suggest_float(low = 0.001, high = 10, log = True, name = 'alpha1')
+    alpha2 = trial.suggest_float(low = 0.001, high = 10, log = True, name = 'alpha2')
+    alpha3 = trial.suggest_float(low = 0.001, high = 10, log = True, name = 'alpha3')
+    alpha4 = trial.suggest_float(low = 0.001, high = 10, log = True, name = 'alpha4')
+    alpha5 = trial.suggest_float(low = 0.001, high = 10, log = True, name = 'alpha5')
+    beta1 = trial.suggest_float(low = 2, high = 3, name = 'beta1')
     
     np.random.seed(123)
 
@@ -38,11 +38,11 @@ def objective(trial):
         spymaster = SpyMaster(board_dict, 
                               board_words,
                               my_team = 'blue', 
+                              alpha1 = alpha1,
                               alpha2 = alpha2, 
                               alpha3 = alpha3, 
                               alpha4 = alpha4, 
                               alpha5 = alpha5, 
-                              alpha6 = alpha6,
                               beta1 = beta1)
         operative = Operative(board_words)
         targets, proposal = spymaster.make_proposal()
