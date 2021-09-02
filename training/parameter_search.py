@@ -44,7 +44,7 @@ def objective(trial):
                               alpha5 = alpha5, 
                               alpha6 = alpha6,
                               beta1 = beta1)
-        operative = Operative(spymaster.board_words)
+        operative = Operative(board_words)
         targets, proposal = spymaster.make_proposal()
         guess = operative.Guess(proposal, len(targets))
         score = 0
