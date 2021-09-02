@@ -12,6 +12,7 @@ try:
     pkg_resources.get_distribution('en_core_web_lg')
 except pkg_resources.DistributionNotFound:
     subprocess.call(['python', '-m', 'spacy', 'download', 'en_core_web_lg'])
+nltk.download('words')
 
 from utils.spymaster import SpyMaster
 from utils.operative import Operative
@@ -20,11 +21,9 @@ def simulate_board(possible_words):
     
     sampled_words = np.random.choice(possible_words, size = 25, replace = False)
     sampling_probs = np.arange(1, 9) / np.arange(1, 9).sum()
-    num_words_blue, num_words_orange = np.random.choice(np.arange(1, 9), size = 2, p = sampling_probs)
-    num_words_white = np.random.choice(9, size = 1, p = np.arange(1, 10) / np.arange(1, 10).sum())[0]
-    board = {'blue': list(sampled_words[:8][:num_words_blue]),
-             'orange': list(sampled_words[8:16][:num_words_orange]),
-             'white': list(sampled_words[16:24][:num_words_white]),
+    board = {'blue': list(sampled_words[:8][:np.random.choice(np.arange(1, 9), size = 1, p = sampling_probs)[0]]),
+             'orange': list(sampled_words[8:16][:np.random.choice(np.arange(1, 9), size = 1, p = sampling_probs)[0]]),
+             'white': list(sampled_words[16:24][:np.random.choice(9, size = 1, p = np.arange(1, 10) / np.arange(1, 10).sum())[0]]),
              'black': [sampled_words[24]]}
     
     return board
