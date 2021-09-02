@@ -7,7 +7,10 @@ from utils.game import Game
 class SpyMaster(Game):
     
     nlp = spacy.load('en_core_web_lg')
-    english_words = set([word.upper() for word in nltk.corpus.words.words()])
+    
+    with open('data/vocab.txt', 'r') as file:
+        english_words = set([word.strip('\n') for word in file.readlines()])
+
     vocab = list(set([word.upper() for word in nlp.vocab.strings]).intersection(english_words))
     vocab_nlp = list(nlp.pipe(vocab))
     vocab_embeddings = np.array([word.vector for word in vocab_nlp])
