@@ -113,12 +113,17 @@ class SpyMaster(Game):
     # score a set of target words
     def score(self, targets: list) -> np.ndarray:
         
+        target_indices = targets if len(targets) > 1 else targets[0]
+        non_team_word_indices = self.word_indices['white'] + self.word_indices[self.other_team]
+        if len(non_team_word_indices) == 1:
+            non_team_word_indices = non_team_word_indices[0]
+        
         target_similarities = self.proposal_board_similarities[:, targets]
         non_team_word_similarities = self.proposal_board_similarities[:, self.word_indices['white'] + self.word_indices[self.other_team]]
         mean_target_similarities = target_similarities.mean(axis = 1)
         mean_non_team_word_similarities = non_team_word_similarities.mean(axis = 1)
         var_non_team_word_similarities = (non_team_word_similarities**2).mean(axis = 1)
-        black_word_similarities = self.proposal_board_similarities[:, self.word_indices['black']]
+        black_word_similarities = self.proposal_board_similarities[:, self.word_indices['black'][0]]
         team_score_ratio = (self.other_team_score + 1) / (self.my_team_score + 1)
         scores = (self.alpha1 * mean_target_similarities + 
                   self.alpha2 * team_score_ratio * np.log2(len(targets)) -
