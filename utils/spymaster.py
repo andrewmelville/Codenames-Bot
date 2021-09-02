@@ -8,8 +8,8 @@ class SpyMaster(Game):
     
     nlp = spacy.load('en_core_web_lg')
     
-    with open('data/vocab.txt', 'r') as file:
-        english_words = set([word.strip('\n') for word in file.readlines()])
+    with open('vocab.txt', 'r') as file:
+        english_words = set([word.strip('\n').upper() for word in file.readlines()])
 
     vocab = list(set([word.upper() for word in nlp.vocab.strings]).intersection(english_words))
     vocab_nlp = list(nlp.pipe(vocab))
