@@ -64,7 +64,7 @@ class SpyMaster(Game):
            
         # get list of all possible proposal words
         self.proposal_word_indices = [(i, word) for i, word in enumerate(self.vocab) if word not in self.board_words]
-            
+        
         # initialise spacy NLP instances
         board_word_nlp = SpyMaster.nlp.pipe(self.board_words)
         

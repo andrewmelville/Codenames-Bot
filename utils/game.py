@@ -1,5 +1,6 @@
 import time
 import random
+import numpy as np
 from itertools import chain
 
 class Game:
@@ -16,7 +17,8 @@ class Game:
                       'white': list(sampled_words[16:24][:num_words_white]),
                       'black': [sampled_words[24]]
                      }
-        board_words = list(chain(*board_dict.values()))
+        board_dict = {team: [str(word) for word in words] for team, words in board_dict.items()}
+        board_words = [str(word) for word in chain(*board_dict.values())]
         random.shuffle(board_words)
         
         return board_dict, board_words
